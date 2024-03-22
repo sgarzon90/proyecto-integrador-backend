@@ -31,7 +31,12 @@ const validateBody = (req, res, next) => {
         imageFileName: Joi.string().min(15).max(150).required(),
         stock: Joi.number().integer().min(0).required(),
         price: Joi.number().min(1).required(),
-        isPromotion: Joi.boolean().required(),
+        isPromotion: Joi.boolean(),
+        brand: Joi.string().allow("").allow(null),
+        category: Joi.string(),
+        isImported: Joi.boolean(),
+        isNational: Joi.boolean(),
+        freeShipping: Joi.boolean(),
     });
 
     validate(schema, req.body, res, next);

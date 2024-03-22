@@ -90,12 +90,11 @@ const create = async (req, res) => {
     try {
         const collection = await getCollection("products");
         const id = await generateId(collection);
-        const product = createSchema({ id, ...req.body });
-        await collection.insertOne(product);
-
-        res.status(201).send({ success: true, data: product });
+        const productData = { ...req.body, id: Number(id) };
+        await collection.insertOne(productData);
+        res.status(201).send({ success: true, data: productData });
     } catch (error) {
-        console.log(error.message);
+        console.error(error.message);
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 };
