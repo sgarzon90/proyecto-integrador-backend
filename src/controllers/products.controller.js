@@ -90,7 +90,8 @@ const create = async (req, res) => {
     try {
         const collection = await getCollection("products");
         const id = await generateId(collection);
-        const productData = { ...req.body, id: Number(id) };
+        const productData = req.body; // Utilizar los datos directamente del cuerpo de la solicitud
+        productData.id = Number(id); // Asignar el id generado al producto
         await collection.insertOne(productData);
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
