@@ -1,5 +1,6 @@
 const express = require("express");
 const multer = require("multer");
+const cors = require("cors");
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
@@ -17,9 +18,10 @@ const HOST = process.env.HOST || "localhost";
 
 // Middlewares
 server.use(express.json());
+server.use(cors());
 server.use("/api/products", productsRouter);
 
-// Configuración de carpeta estatica
+// Configuración de carpeta estática
 server.use("/public", express.static(DIR_PUBLIC_PATH));
 
 // Control de errores
@@ -36,10 +38,13 @@ server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
 });
 
+// Middleware para manejar las solicitudes OPTIONS
+server.options("", cors());
+
 // Método oyente de solicitudes
 server.listen(PORT, HOST, () => {
     console.log(`Server NodeJS version: ${process.version}`);
-    console.log(`Ejecutandose en http://${HOST}:${PORT}`);
+    console.log(`Ejecutándose en http://${HOST}:${PORT}`);
     database.connect(process.env.DATABASE_URL, process.env.DATABASE_NAME);
 });
 
