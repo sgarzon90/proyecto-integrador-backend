@@ -1,18 +1,17 @@
-const express = require("express");
-const router = express.Router();
+const Router = require("express");
+const routes = Router();
 const { validateEmail } = require("../validations/email.validation.js");
 const nodemailer = require("nodemailer");
-require("dotenv").config({ path: ENV_PATH });
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: "puntoorienteempresa@gmail.com",
+        pass: "Anypassword24",
     },
 });
 
-router.post("/", validateEmail, async (req, res) => {
+routes.post("/", validateEmail, async (req, res) => {
     const { fullname, telephone, email, consult } = req.body;
 
     const mailOptions = {
@@ -31,4 +30,4 @@ router.post("/", validateEmail, async (req, res) => {
     }
 });
 
-module.exports = router;
+module.exports = routes;
