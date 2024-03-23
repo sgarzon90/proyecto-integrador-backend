@@ -9,6 +9,7 @@ const database = require("./connectionDB.js");
 
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
+const { validateEmail } = require("../validations/email.validation.js");
 
 // variables de entorno
 require("dotenv").config({ path: ENV_PATH });
@@ -53,7 +54,7 @@ server.use("*", (req, res) => {
 server.options("", cors());
 
 // Nueva ruta para manejar solicitudes de contacto
-server.post("/contact", validateBody, async (req, res) => {
+server.post("/contact", validateEmail, async (req, res) => {
     const { fullname, telephone, email, consult } = req.body;
 
     const mailOptions = {
