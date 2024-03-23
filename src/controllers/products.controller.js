@@ -22,7 +22,20 @@ const normalizeValue = (value) => {
 };
 
 const createSchema = (values) => {
-    const { id, name, description, imageFileName, stock, price, isPromotion } = values;
+    const {
+        id,
+        name,
+        description,
+        imageFileName,
+        stock,
+        price,
+        isPromotion,
+        brand,
+        category,
+        isImported,
+        isNational,
+        freeShipping,
+    } = values;
 
     return {
         id: Number(id),
@@ -32,6 +45,11 @@ const createSchema = (values) => {
         stock: Number(stock),
         price: Number(price),
         isPromotion: Boolean(isPromotion),
+        brand: brand ?? null,
+        category: category ?? null,
+        isImported: Boolean(isImported),
+        isNational: Boolean(isNational),
+        freeShipping: Boolean(freeShipping),
     };
 };
 
@@ -90,8 +108,7 @@ const create = async (req, res) => {
     try {
         const collection = await getCollection("products");
         const id = await generateId(collection);
-        const productData = req.body; // Utilizar los datos directamente del cuerpo de la solicitud
-        productData.id = Number(id); // Asignar el id generado al producto
+        const productData = createSchema({ ...req.body, id });
         await collection.insertOne(productData);
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
