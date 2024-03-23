@@ -108,7 +108,14 @@ const create = async (req, res) => {
     try {
         const collection = await getCollection("products");
         const id = await generateId(collection);
-        const productData = createSchema({ ...req.body, id });
+
+        // Verificamos si se ha enviado una imagen
+        let imageFileName = "default.jpg"; // Imagen predeterminada en caso de que no se envíe ninguna
+        if (req.file) {
+            imageFileName = req.file.filename; // Nombre de archivo de la imagen subida
+        }
+
+        const productData = createSchema({ ...req.body, id, imageFileName });
         await collection.insertOne(productData);
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
@@ -128,7 +135,13 @@ const update = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
-        const values = createSchema({ id, ...req.body });
+        // Verificamos si se ha enviado una imagen
+        let imageFileName = product.imageFileName; // Mantenemos la imagen existente por defecto
+        if (req.file) {
+            imageFileName = req.file.filename; // Nombre de archivo de la nueva imagen subida
+        }
+
+        const values = createSchema({ id, ...req.body, imageFileName });
         await collection.updateOne({ id: Number(id) }, { $set: values });
 
         if (product.imageFileName != values.imageFileName) {
