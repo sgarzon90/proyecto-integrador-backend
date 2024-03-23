@@ -3,6 +3,7 @@ const multer = require("multer");
 const cors = require("cors");
 
 const productsRouter = require("./routes/products.router.js");
+const emailRouter = require("./routes/email.router.js");
 const database = require("./connectionDB.js");
 
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
@@ -20,6 +21,7 @@ const HOST = process.env.HOST || "localhost";
 server.use(express.json());
 server.use(cors());
 server.use("/api/products", productsRouter);
+server.use("/api/email", emailRouter);
 
 // Configuración de carpeta estática
 server.use("/public", express.static(DIR_PUBLIC_PATH));
