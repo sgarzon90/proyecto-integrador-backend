@@ -19,7 +19,7 @@ const HOST = process.env.HOST || "localhost";
 // Middlewares
 server.use(express.json());
 server.use(cors({
-    origin: "https://puntooriente.onrender.com",
+    origin: "https://puntooriente.onrender.com/api/products",
     methods: "GET,PUT,PATCH,POST,DELETE",
 }));
 server.use("/api/products", productsRouter);
