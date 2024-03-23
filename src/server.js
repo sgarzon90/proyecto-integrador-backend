@@ -17,7 +17,7 @@ const HOST = process.env.HOST || "localhost";
 server.use(bodyParser.json());
 server.use(cors());
 server.use("/api/products", productsRouter);
-server.use("/api/contact", contactRouter); // Usar el enrutador de contacto para la ruta /api/contact
+server.use("/contact", contactRouter); // Usar el enrutador de contacto para la ruta /api/contact
 server.use("/public", express.static(DIR_PUBLIC_PATH));
 
 server.use((error, req, res, next) => {
