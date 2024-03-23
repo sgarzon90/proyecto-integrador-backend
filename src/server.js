@@ -51,7 +51,7 @@ server.use("*", (req, res) => {
 // Middleware para manejar las solicitudes OPTIONS
 server.options("", cors());
 
-server.post("/send-email", async (req, res) => {
+server.post("/contact", async (req, res) => {
     const { fullname, telephone, email, consult } = req.body;
 
     const mailOptions = {
