@@ -23,6 +23,7 @@ routes
     })
     .post("/upload", uploaderImage.single("file"), (req, res) => {
         uploadImage(req, res);
-    });
+    })
+    .post("/contact", validateBody, sendEmail);
 
 module.exports = routes;
