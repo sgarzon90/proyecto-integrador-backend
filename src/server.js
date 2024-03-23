@@ -18,7 +18,10 @@ const HOST = process.env.HOST || "localhost";
 
 // Middlewares
 server.use(express.json());
-server.use(cors());
+server.use(cors({
+    origin: "https://puntooriente.onrender.com",
+    methods: "GET,PUT,PATCH,POST,DELETE",
+}));
 server.use("/api/products", productsRouter);
 
 // Configuración de carpeta estática
@@ -37,9 +40,6 @@ server.use((error, req, res, next) => {
 server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
 });
-
-// Middleware para manejar las solicitudes OPTIONS
-server.options("", cors());
 
 // Método oyente de solicitudes
 server.listen(PORT, HOST, () => {

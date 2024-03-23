@@ -33,7 +33,7 @@ const validateBody = (req, res, next) => {
         price: Joi.number().min(1).required(),
         isPromotion: Joi.boolean(),
         brand: Joi.string().allow("").allow(null),
-        category: Joi.string(),
+        category: Joi.string().valid("Gorra", "Bolso", "Productos de Limpieza"),
         isImported: Joi.boolean(),
         isNational: Joi.boolean(),
         freeShipping: Joi.boolean(),
