@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
@@ -24,6 +25,15 @@ server.use("/api/products", productsRouter);
 // Configuración de carpeta estática
 server.use("/public", express.static(DIR_PUBLIC_PATH));
 
+//Configuración de correo
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: "puntoorienteempresa@gmail.com",
+        pass: "Anypassword24",
+    },
+});
+
 // Control de errores
 server.use((error, req, res, next) => {
     if (error instanceof multer.MulterError) {
@@ -40,6 +50,25 @@ server.use("*", (req, res) => {
 
 // Middleware para manejar las solicitudes OPTIONS
 server.options("", cors());
+
+server.post("/send-email", async (req, res) => {
+    const { fullname, telephone, email, consult } = req.body;
+
+    const mailOptions = {
+        from: email,
+        to: "puntoorienteempresa@gmail.com",
+        subject: "Consulta recibida desde el formulario de contacto",
+        text: `Nombre: ${fullname}\nTeléfono: ${telephone}\nEmail: ${email}\nConsulta: ${consult}`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ success: true, message: "Correo enviado correctamente" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Error al enviar el correo" });
+    }
+});
 
 // Método oyente de solicitudes
 server.listen(PORT, HOST, () => {
