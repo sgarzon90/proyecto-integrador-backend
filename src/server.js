@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
+const bodyParser = require("body-parser"); // Agrega el middleware de body-parser
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
@@ -18,7 +19,7 @@ const PORT = process.env.PORT || 3030;
 const HOST = process.env.HOST || "localhost";
 
 // Middlewares
-server.use(express.json());
+server.use(bodyParser.json());
 server.use(cors());
 server.use("/api/products", productsRouter);
 
@@ -29,8 +30,8 @@ server.use("/public", express.static(DIR_PUBLIC_PATH));
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "puntoorienteempresa@gmail.com",
-        pass: "Anypassword24",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
     },
 });
 
@@ -51,7 +52,8 @@ server.use("*", (req, res) => {
 // Middleware para manejar las solicitudes OPTIONS
 server.options("", cors());
 
-server.post("/contact", async (req, res) => {
+// Nueva ruta para manejar solicitudes de contacto
+server.post("/contact", validateBody, async (req, res) => {
     const { fullname, telephone, email, consult } = req.body;
 
     const mailOptions = {
