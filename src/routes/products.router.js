@@ -1,8 +1,7 @@
 const Router = require("express");
 const { validateParamId, validateBody } = require("../validations/products.validation.js");
-const { getAll, getOne, create, update, remove, uploadImage } = require("../controllers/products.controller.js");
+const { getAll, getOne, create, update, remove, uploadImage, sendContactForm } = require("../controllers/products.controller.js");
 const uploaderImage = require("../uploader.image.js");
-const sendEmail = require("../emailService.js");
 
 const routes = Router();
 
@@ -10,6 +9,7 @@ routes
     .get("/", (req, res) => {
         getAll(req, res);
     })
+    .post("/contact", sendContactForm)
     .get("/:id", validateParamId, (req, res) => {
         getOne(req, res);
     })
@@ -24,7 +24,6 @@ routes
     })
     .post("/upload", uploaderImage.single("file"), (req, res) => {
         uploadImage(req, res);
-    })
-    .post("/contact", sendContactForm);
+    });
 
 module.exports = routes;
