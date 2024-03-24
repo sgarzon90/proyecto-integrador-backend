@@ -33,6 +33,7 @@ const createSchema = (values) => {
         isImported,
         isNational,
         freeShipping,
+        imageFileName,
     } = values;
 
     return {
@@ -47,16 +48,14 @@ const createSchema = (values) => {
         isImported: Boolean(isImported),
         isNational: Boolean(isNational),
         freeShipping: Boolean(freeShipping),
+        imageFileName: imageFileName ?? "default.jpg",
     };
 };
 
 const deleteImage = (imageFileName) => {
-    if (imageFileName && imageFileName.length > 0) {
+    if (imageFileName && imageFileName.length > 0 && imageFileName !== "default.jpg") {
         const filePath = path.join(DIR_IMAGES_PATH, imageFileName);
-
-        if (imageFileName != "default.jpg") {
-            deletefile(filePath);
-        }
+        deletefile(filePath);
     }
 };
 
@@ -106,7 +105,10 @@ const create = async (req, res) => {
         const collection = await getCollection("products");
         const id = await generateId(collection);
 
-        const productData = createSchema({ ...req.body, id });
+        // Guardar la imagen
+        const imageFileName = req.file.filename; // Asumiendo que el middleware multer está configurado para manejar la carga de imágenes
+        const productData = createSchema({ ...req.body, id, imageFileName });
+
         await collection.insertOne(productData);
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
@@ -126,10 +128,13 @@ const update = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
+        // Guardar la nueva imagen si se proporciona
+        const imageFileName = req.file ? req.file.filename : product.imageFileName;
+
         // Eliminar el campo "id" de req.body antes de actualizar
         const { id: productId, ...values } = req.body;
 
-        const updatedValues = createSchema({ id: Number(id), ...values });
+        const updatedValues = createSchema({ id: Number(id), ...values, imageFileName });
         await collection.updateOne({ id: Number(id) }, { $set: updatedValues });
 
         res.status(200).send({ success: true, data: updatedValues });
@@ -157,6 +162,16 @@ const remove = async (req, res) => {
         console.log(error.message);
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
+
+    const uploadImage = async (req, res) => {
+        try {
+            const imageFileName = req.file.filename;
+            res.status(201).send({ success: true, data: imageFileName });
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send({ success: false, message: ERROR_SERVER });
+        }
+    };
 };
 
-module.exports = { getAll, getOne, create, update, remove };
+module.exports = { getAll, getOne, create, update, remove, uploadImage };

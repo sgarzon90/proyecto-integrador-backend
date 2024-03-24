@@ -1,10 +1,10 @@
 const Router = require("express");
 const { validateParamId, validateBody } = require("../validations/products.validation.js");
 const { getAll, getOne, create, update, remove, uploadImage } = require("../controllers/products.controller.js");
-const uploaderImage = require("../uploader.image.js");
+const configureMulter = require("../uploader.image.js");
 
 const routes = Router();
-
+const uploaderImage = configureMulter(); // Ajuste aquí
 routes
     .get("/", (req, res) => {
         getAll(req, res);
