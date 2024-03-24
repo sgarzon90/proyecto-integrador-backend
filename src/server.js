@@ -1,11 +1,3 @@
-const express = require("express");
-const multer = require("multer");
-const cors = require("cors");
-const productsRouter = require("./routes/products.router.js");
-const database = require("./connectionDB.js");
-const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
-const { ERROR_SERVER } = require("./constants/messages.js");
-
 // Configuración de express
 const server = express();
 const PORT = process.env.PORT || 3030;
@@ -14,9 +6,13 @@ const HOST = process.env.HOST || "localhost";
 // Middlewares
 server.use(express.json());
 
-// Configuración de CORS
-server.use(cors());
-server.options("*", cors()); // Manejar las solicitudes OPTIONS antes de las rutas
+// Deshabilitar CORS
+server.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 server.use("/api/products", productsRouter);
 server.use("/public", express.static(DIR_PUBLIC_PATH));
