@@ -105,8 +105,12 @@ const create = async (req, res) => {
         const collection = await getCollection("products");
         const id = await generateId(collection);
 
+        // Obtener la URL de la imagen por defecto
+        const defaultImageURL = "https://puntooriente.onrender.com/public/images/default.jpg";
+
         // Guardar la imagen
-        const imageFileName = req.file.filename; // Asumiendo que el middleware multer está configurado para manejar la carga de imágenes
+        const imageFileName = req.file ? req.file.filename : defaultImageURL;
+
         const productData = createSchema({ ...req.body, id, imageFileName });
 
         await collection.insertOne(productData);
@@ -130,6 +134,12 @@ const update = async (req, res) => {
 
         // Guardar la nueva imagen si se proporciona
         const imageFileName = req.file ? req.file.filename : product.imageFileName;
+
+        // Eliminar la imagen anterior si es diferente de "default.jpg"
+        if (product.imageFileName !== "default.jpg") {
+            const filePath = path.join(DIR_IMAGES_PATH, product.imageFileName);
+            deletefile(filePath);
+        }
 
         // Eliminar el campo "id" de req.body antes de actualizar
         const { id: productId, ...values } = req.body;
