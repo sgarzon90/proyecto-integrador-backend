@@ -126,12 +126,8 @@ const update = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
-        const values = createSchema({ ...req.body, id: Number(id) });
-
-        // Eliminar el campo "_id" del objeto de valores antes de actualizar
-        delete values._id;
-
-        await collection.updateOne({ id: Number(id) }, { $set: values, $unset: { _id: "" } });
+        const values = createSchema({ id, ...req.body });
+        await collection.updateOne({ id: Number(id) }, { $set: values });
 
         res.status(200).send({ success: true, data: values });
     } catch (error) {
