@@ -1,12 +1,7 @@
 const path = require("path");
 const { getCollection, generateId } = require("../connectionDB.js");
 const { HEADER_CONTENT_TYPE } = require("../constants/headers.js");
-
-const {
-    ERROR_ID_NOT_FOUND,
-    ERROR_SERVER,
-    ERROR_UPLOAD_NULL,
-} = require("../constants/messages.js");
+const { ERROR_ID_NOT_FOUND, ERROR_SERVER, ERROR_UPLOAD_NULL } = require("../constants/messages.js");
 const { DIR_IMAGES_PATH } = require("../constants/paths.js");
 const { deletefile } = require("../fileSystem.js");
 
@@ -22,34 +17,12 @@ const normalizeValue = (value) => {
 };
 
 const createSchema = (values) => {
-    const {
-        id,
-        name,
-        description,
-        imageFileName,
-        stock,
-        price,
-        isPromotion,
-        brand,
-        category,
-        isImported,
-        isNational,
-        freeShipping,
-    } = values;
+    const { name, description, price } = values;
 
     return {
-        id: Number(id),
         name: normalizeValue(name),
         description: description ?? null,
-        imageFileName,
-        stock: Number(stock),
         price: Number(price),
-        isPromotion: Boolean(isPromotion),
-        brand: brand ?? null,
-        category: category ?? null,
-        isImported: Boolean(isImported),
-        isNational: Boolean(isNational),
-        freeShipping: Boolean(freeShipping),
     };
 };
 
@@ -109,13 +82,7 @@ const create = async (req, res) => {
         const collection = await getCollection("products");
         const id = await generateId(collection);
 
-        // Verificamos si se ha enviado una imagen
-        let imageFileName = "https://puntooriente.onrender.com/public/images/img_546820_20240323232547.jpg"; // Imagen predeterminada en caso de que no se envíe ninguna
-        if (req.file) {
-            imageFileName = req.file.filename; // Nombre de archivo de la imagen subida
-        }
-
-        const productData = createSchema({ ...req.body, id, imageFileName });
+        const productData = createSchema({ ...req.body, id });
         await collection.insertOne(productData);
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
@@ -135,18 +102,8 @@ const update = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
-        // Verificamos si se ha enviado una imagen
-        let imageFileName = product.imageFileName; // Mantenemos la imagen existente por defecto
-        if (req.file) {
-            imageFileName = req.file.filename; // Nombre de archivo de la nueva imagen subida
-        }
-
-        const values = createSchema({ id, ...req.body, imageFileName });
+        const values = createSchema({ ...req.body, id });
         await collection.updateOne({ id: Number(id) }, { $set: values });
-
-        if (product.imageFileName != values.imageFileName) {
-            deleteImage(product.imageFileName);
-        }
 
         res.status(200).send({ success: true, data: values });
     } catch (error) {
@@ -167,8 +124,6 @@ const remove = async (req, res) => {
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
         await collection.deleteOne({ id: Number(id) });
-
-        deleteImage(product.imageFileName);
 
         res.status(200).send({ success: true, data: product });
     } catch (error) {

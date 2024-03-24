@@ -27,16 +27,8 @@ const validateParamId = (req, res, next) => {
 const validateBody = (req, res, next) => {
     const schema = Joi.object({
         name: Joi.string().min(3).max(35).required(),
-        description: Joi.string().min(15).max(150).allow("").allow(null),
-        imageFileName: Joi.string().min(15).max(150).required(),
-        stock: Joi.number().integer().min(0).required(),
+        description: Joi.string().min(15).max(150).required(),
         price: Joi.number().min(1).required(),
-        isPromotion: Joi.boolean(),
-        brand: Joi.string().allow("").allow(null),
-        category: Joi.string().valid("Gorra", "Bolso", "Productos de Limpieza"),
-        isImported: Joi.boolean(),
-        isNational: Joi.boolean(),
-        freeShipping: Joi.boolean(),
     });
 
     validate(schema, req.body, res, next);
