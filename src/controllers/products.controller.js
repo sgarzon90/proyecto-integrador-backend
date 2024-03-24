@@ -1,7 +1,11 @@
 const path = require("path");
 const { getCollection, generateId } = require("../connectionDB.js");
 const { HEADER_CONTENT_TYPE } = require("../constants/headers.js");
-const { ERROR_ID_NOT_FOUND, ERROR_SERVER, ERROR_UPLOAD_NULL } = require("../constants/messages.js");
+
+const {
+    ERROR_ID_NOT_FOUND,
+    ERROR_SERVER,
+} = require("../constants/messages.js");
 const { DIR_IMAGES_PATH } = require("../constants/paths.js");
 const { deletefile } = require("../fileSystem.js");
 
@@ -17,12 +21,32 @@ const normalizeValue = (value) => {
 };
 
 const createSchema = (values) => {
-    const { name, description, price } = values;
+    const {
+        id,
+        name,
+        description,
+        stock,
+        price,
+        isPromotion,
+        brand,
+        category,
+        isImported,
+        isNational,
+        freeShipping,
+    } = values;
 
     return {
+        id: Number(id),
         name: normalizeValue(name),
         description: description ?? null,
+        stock: Number(stock),
         price: Number(price),
+        isPromotion: Boolean(isPromotion),
+        brand: brand ?? null,
+        category: category ?? null,
+        isImported: Boolean(isImported),
+        isNational: Boolean(isNational),
+        freeShipping: Boolean(freeShipping),
     };
 };
 
@@ -68,7 +92,7 @@ const getOne = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
-        res.status(200).send({ success: false, data: product });
+        res.status(200).send({ success: true, data: product });
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: ERROR_SERVER });
@@ -102,7 +126,7 @@ const update = async (req, res) => {
 
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
 
-        const values = createSchema({ ...req.body, id });
+        const values = createSchema({ id, ...req.body });
         await collection.updateOne({ id: Number(id) }, { $set: values });
 
         res.status(200).send({ success: true, data: values });
@@ -132,19 +156,4 @@ const remove = async (req, res) => {
     }
 };
 
-const uploadImage = async (req, res) => {
-    res.set(HEADER_CONTENT_TYPE);
-
-    try {
-        const file = req.file;
-
-        if (!file) return res.status(400).send({ success: false, message: ERROR_UPLOAD_NULL });
-
-        res.status(201).send({ success: true, data: file });
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ success: false, message: ERROR_SERVER });
-    }
-};
-
-module.exports = { getAll, getOne, create, update, remove, uploadImage };
+module.exports = { getAll, getOne, create, update, remove };

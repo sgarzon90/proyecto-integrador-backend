@@ -26,9 +26,16 @@ const validateParamId = (req, res, next) => {
 
 const validateBody = (req, res, next) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).max(35).required(),
-        description: Joi.string().min(15).max(150).required(),
-        price: Joi.number().min(1).required(),
+        name: Joi.string().min(3).max(25).required(),
+        description: Joi.string().min(15).max(150).allow("").allow(null),
+        stock: Joi.number().integer().min(0).required(),
+        price: Joi.number().min(0).required(),
+        isPromotion: Joi.boolean().required(),
+        brand: Joi.string().allow("").allow(null),
+        category: Joi.string().valid("Gorra", "Bolso", "Productos de Limpieza").required(),
+        isImported: Joi.boolean().required(),
+        isNational: Joi.boolean().required(),
+        freeShipping: Joi.boolean().required(),
     });
 
     validate(schema, req.body, res, next);
