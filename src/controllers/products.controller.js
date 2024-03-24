@@ -110,7 +110,7 @@ const create = async (req, res) => {
         const id = await generateId(collection);
 
         // Verificamos si se ha enviado una imagen
-        let imageFileName = "default.jpg"; // Imagen predeterminada en caso de que no se envíe ninguna
+        let imageFileName = "https://puntooriente.onrender.com/public/images/img_546820_20240323232547.jpg"; // Imagen predeterminada en caso de que no se envíe ninguna
         if (req.file) {
             imageFileName = req.file.filename; // Nombre de archivo de la imagen subida
         }

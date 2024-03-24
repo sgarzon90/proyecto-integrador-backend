@@ -1,15 +1,10 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
-
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
-
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
-
-// variables de entorno
-require("dotenv").config({ path: ENV_PATH });
 
 // Configuración de express
 const server = express();
@@ -18,10 +13,12 @@ const HOST = process.env.HOST || "localhost";
 
 // Middlewares
 server.use(express.json());
-server.use(cors());
-server.use("/api/products", productsRouter);
 
-// Configuración de carpeta estática
+// Configuración de CORS
+server.use(cors());
+server.options("*", cors()); // Manejar las solicitudes OPTIONS antes de las rutas
+
+server.use("/api/products", productsRouter);
 server.use("/public", express.static(DIR_PUBLIC_PATH));
 
 // Control de errores
@@ -30,6 +27,7 @@ server.use((error, req, res, next) => {
         return res.status(error.code).send({ success: false, message: error.field });
     }
 
+    console.error("Error en el servidor:", error); // Registrar el error completo
     res.status(500).send({ success: false, message: ERROR_SERVER });
 });
 
@@ -37,9 +35,6 @@ server.use((error, req, res, next) => {
 server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
 });
-
-// Middleware para manejar las solicitudes OPTIONS
-server.options("", cors());
 
 // Método oyente de solicitudes
 server.listen(PORT, HOST, () => {
