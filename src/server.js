@@ -1,3 +1,16 @@
+const express = require("express");
+const multer = require("multer");
+const cors = require("cors");
+
+const productsRouter = require("./routes/products.router.js");
+const database = require("./connectionDB.js");
+
+const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
+const { ERROR_SERVER } = require("./constants/messages.js");
+
+// variables de entorno
+require("dotenv").config({ path: ENV_PATH });
+
 // Configuración de express
 const server = express();
 const PORT = process.env.PORT || 3030;
@@ -5,16 +18,13 @@ const HOST = process.env.HOST || "localhost";
 
 // Middlewares
 server.use(express.json());
-
-// Deshabilitar CORS
-server.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
+server.use(cors({
+    origin: "http://localhost:5173/",
+    methods: "GET,PUT,PATCH,POST,DELETE",
+}));
 server.use("/api/products", productsRouter);
+
+// Configuración de carpeta estática
 server.use("/public", express.static(DIR_PUBLIC_PATH));
 
 // Control de errores
@@ -23,7 +33,6 @@ server.use((error, req, res, next) => {
         return res.status(error.code).send({ success: false, message: error.field });
     }
 
-    console.error("Error en el servidor:", error); // Registrar el error completo
     res.status(500).send({ success: false, message: ERROR_SERVER });
 });
 
