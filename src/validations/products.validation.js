@@ -25,6 +25,7 @@ const validateParamId = (req, res, next) => {
 };
 
 const validateBody = (req, res, next) => {
+    delete req.body._id;
     const schema = Joi.object({
         name: Joi.string().min(3).max(25).required(),
         description: Joi.string().min(15).max(150).allow("").allow(null),
