@@ -163,15 +163,16 @@ const remove = async (req, res) => {
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 
-    const uploadImage = async (req, res) => {
-        try {
-            const imageFileName = req.file.filename;
-            res.status(201).send({ success: true, data: imageFileName });
-        } catch (error) {
-            console.error(error.message);
-            res.status(500).send({ success: false, message: ERROR_SERVER });
-        }
-    };
+};
+
+const uploadImage = async (req, res) => {
+    try {
+        const imageFileName = req.file.filename;
+        res.status(201).send({ success: true, data: imageFileName });
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send({ success: false, message: ERROR_SERVER });
+    }
 };
 
 module.exports = { getAll, getOne, create, update, remove, uploadImage };
