@@ -40,21 +40,28 @@ server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
 });
 
-server.get("/api/send-mail", async (req, res) => {
-    res.set({ "Content-Type": "application/json" });
-
+app.post("/api/contact", async (req, res) => {
     try {
-        const { to, subject, content } = req.query;
+        const { fullname, telephone, email, consult } = req.body;
+        // Realizar la validación si es necesario
 
-        if (!to || !subject || !content) {
-            return res.status(4000).send({ error: "Faltan datos relevantes" });
-        }
+        const subject = "Consulta recibida desde el formulario de contacto";
+        const content = `
+            Nombre y apellido: ${fullname}
+            Teléfono: ${telephone}
+            Correo electrónico: ${email}
+            Consulta: ${consult}
+        `;
+
+        const to = "santigg90@gmail.com"; // Cambiar el destinatario según tus necesidades
 
         const result = await sendMail(to, subject, content);
+        console.log("Resultado del envío de correo:", result);
 
-        res.status(200).send(result);
+        res.status(200).json({ message: "Correo electrónico enviado correctamente" });
     } catch (error) {
-        res.status(500).send({ error: MESSAGE_500 });
+        console.error("Error al enviar el correo electrónico:", error);
+        res.status(500).json({ error: "Error interno del servidor" });
     }
 });
 
