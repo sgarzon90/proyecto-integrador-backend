@@ -17,7 +17,22 @@ const processShoppingCart = async (req, res) => {
         const transactionsCollection = await getCollection("transactions");
 
         // Calcular el total de la compra
-        const total = calculateTotal(items);
+        let total = 0;
+        for (const item of items) {
+            total += item.precio * item.cantidad;
+
+            // Actualizar el stock del producto en la base de datos
+            const productCollection = await getCollection("products");
+            const product = await productCollection.findOne({ id: item.id });
+            if (!product) {
+                throw new Error(`Producto con ID ${item.id} no encontrado`);
+            }
+            const updatedStock = product.stock - item.cantidad;
+            if (updatedStock < 0) {
+                throw new Error(`No hay suficiente stock para el producto con ID ${item.id}`);
+            }
+            await productCollection.updateOne({ id: item.id }, { $set: { stock: updatedStock } });
+        }
 
         // Crear el documento de la transacción
         const transaction = {
