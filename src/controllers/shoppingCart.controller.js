@@ -4,7 +4,7 @@ const { getCollection } = require("../connectionDB.js");
 const calculateTotal = (items) => {
     let total = 0;
     items.forEach((item) => {
-        total += item.precio * item.cantidad; // Multiplica el precio por la cantidad de cada producto
+        total += item.price * item.amount; // Multiplica el precio por la cantidad de cada producto
     });
     return total;
 };
@@ -26,7 +26,7 @@ const processShoppingCart = async (req, res) => {
             if (!product) {
                 throw new Error(`Producto con ID ${item.id} no encontrado`);
             }
-            const updatedStock = product.stock - item.cantidad;
+            const updatedStock = product.stock - item.amount;
             if (updatedStock < 0) {
                 throw new Error(`No hay suficiente stock para el producto con ID ${item.id}`);
             }
@@ -37,13 +37,13 @@ const processShoppingCart = async (req, res) => {
         const transaction = {
             fecha: new Date(),
             total,
-            nombre: customerInfo.nombre,
-            apellido: customerInfo.apellido,
+            nombre: customerInfo.firstName,
+            apellido: customerInfo.lastName,
             productos: items.map((item) => ({
                 id: item.id,
-                nombre: item.nombre,
-                cantidad: item.cantidad,
-                precio: item.precio,
+                nombre: item.name,
+                cantidad: item.amount,
+                precio: item.price,
             })),
         };
 
