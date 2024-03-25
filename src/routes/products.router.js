@@ -2,6 +2,7 @@ const Router = require("express");
 const { validateParamId, validateBody } = require("../validations/products.validation.js");
 const { getAll, getOne, create, update, remove, uploadImage } = require("../controllers/products.controller.js");
 const uploaderImage = require("../uploader.image.js");
+const { processShoppingCart } = require("../controllers/shoppingCart.controller");
 
 const routes = Router();
 
@@ -23,6 +24,9 @@ routes
     })
     .post("/upload", uploaderImage.single("file"), (req, res) => {
         uploadImage(req, res);
+    })
+    .post("/process-cart", (req, res) => {
+        processShoppingCart(req, res);
     });
 
 module.exports = routes;
