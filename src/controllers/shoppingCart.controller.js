@@ -1,5 +1,14 @@
 const { getCollection, generateId } = require("../connectionDB.js");
 
+// Función para calcular el total de la compra
+const calculateTotal = (items) => {
+    let total = 0;
+    items.forEach((item) => {
+        total += item.precio * item.cantidad; // Multiplica el precio por la cantidad de cada producto
+    });
+    return total;
+};
+
 const processShoppingCart = async (req, res) => {
     try {
         const { items, customerInfo } = req.body;
