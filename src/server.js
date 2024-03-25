@@ -23,6 +23,7 @@ server.use(cors());
 server.options("", cors());
 
 server.post("/api/contact", async (req, res) => {
+    res.set({ "Content-Type": "application/json" });
     try {
         const { fullname, telephone, email, consult } = req.body;
         // Realizar la validación si es necesario
