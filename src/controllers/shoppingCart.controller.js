@@ -1,4 +1,4 @@
-const { getCollection, generateId } = require("../connectionDB.js");
+const { getCollection } = require("../connectionDB.js");
 
 // Función para calcular el total de la compra
 const calculateTotal = (items) => {
@@ -17,11 +17,10 @@ const processShoppingCart = async (req, res) => {
         const transactionsCollection = await getCollection("transactions");
 
         // Calcular el total de la compra
-        let total = 0;
-        for (const item of items) {
-            total += item.precio * item.cantidad;
+        const total = calculateTotal(items);
 
-            // Actualizar el stock del producto en la base de datos
+        // Actualizar el stock de los productos
+        for (const item of items) {
             const productCollection = await getCollection("products");
             const product = await productCollection.findOne({ id: item.id });
             if (!product) {
