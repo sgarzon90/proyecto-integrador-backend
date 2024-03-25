@@ -48,7 +48,7 @@ const createSchema = (values) => {
         isImported: Boolean(isImported),
         isNational: Boolean(isNational),
         freeShipping: Boolean(freeShipping),
-        imageFileName: imageFileName ?? "default.jpg",
+        imageFileName,
     };
 };
 
@@ -176,6 +176,8 @@ const remove = async (req, res) => {
 };
 
 const uploadImage = async (req, res) => {
+    res.set(HEADER_CONTENT_TYPE);
+
     try {
         const imageFileName = req.file.filename;
         res.status(201).send({ success: true, data: imageFileName });
