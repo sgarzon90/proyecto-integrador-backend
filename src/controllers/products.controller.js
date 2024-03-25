@@ -88,19 +88,33 @@ const getOne = async (req, res) => {
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 };
+
 const create = async (req, res) => {
     res.set(HEADER_CONTENT_TYPE);
     try {
+        // Verificar si se recibió la imagen
+        if (!req.file) {
+            return res.status(400).send({ success: false, message: ERROR_UPLOAD_NULL });
+        }
+
         const collection = await getCollection("products");
         const id = await generateId(collection);
-        const productData = createSchema({ ...req.body, id });
+
+        // Crear el objeto de datos del producto
+        const productData = createSchema({ ...req.body, id, imageFileName: req.file.filename });
+
+        // Insertar el producto en la base de datos
         await collection.insertOne(productData);
+
+        // Enviar respuesta exitosa
         res.status(201).send({ success: true, data: productData });
     } catch (error) {
         console.error(error.message);
+        // Manejar errores y enviar respuesta de error al frontend
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 };
+
 const update = async (req, res) => {
     res.set(HEADER_CONTENT_TYPE);
     try {
