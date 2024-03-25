@@ -8,8 +8,6 @@ const database = require("./connectionDB.js");
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
 
-const transporter = require("./emailTransporter.js");
-
 // variables de entorno
 require("dotenv").config({ path: ENV_PATH });
 
