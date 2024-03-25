@@ -1,13 +1,14 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
-const sendMail = require("./mailer.js");
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
 
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
+
+const transporter = require("./emailTransporter.js");
 
 // variables de entorno
 require("dotenv").config({ path: ENV_PATH });
@@ -21,32 +22,6 @@ const HOST = process.env.HOST || "localhost";
 server.use(express.json());
 server.use(cors());
 server.options("", cors());
-
-server.post("/api/contact", async (req, res) => {
-    res.set({ "Content-Type": "application/json" });
-    try {
-        const { fullname, telephone, email, consult } = req.body;
-        // Realizar la validación si es necesario
-
-        const subject = "Consulta recibida desde el formulario de contacto";
-        const content = `
-            Nombre y apellido: ${fullname}
-            Teléfono: ${telephone}
-            Correo electrónico: ${email}
-            Consulta: ${consult}
-        `;
-
-        const to = "santigg90@gmail.com"; // Cambiar el destinatario según tus necesidades
-
-        const result = await sendMail(to, subject, content);
-        console.log("Resultado del envío de correo:", result);
-
-        res.status(200).json({ message: "Correo electrónico enviado correctamente" });
-    } catch (error) {
-        console.error("Error al enviar el correo electrónico:", error);
-        res.status(500).json({ error: "Error interno del servidor" });
-    }
-});
 server.use("/api/products", productsRouter);
 
 // Configuración de carpeta estática
