@@ -4,8 +4,6 @@ const { getAll, getOne, create, update, remove, uploadImage } = require("../cont
 const configureMulter = require("../uploader.image.js");
 const transporter = require("../emailTransporter.js");
 
-require("dotenv").config({ path: ENV_PATH });
-
 const routes = Router();
 const uploaderImage = configureMulter(); // Ajuste aquí
 
@@ -14,8 +12,8 @@ routes.post("/send-email", async (req, res) => {
 
     try {
         await transporter.sendMail({
-            from: process.env.SMTP_EMAIL,
-            to: process.env.SMTP_EMAIL, // Opcional: puedes especificar una dirección diferente aquí
+            from: "santigg90@gmail.com",
+            to: "santigg90@gmail.com", // Opcional: puedes especificar una dirección diferente aquí
             subject: "Nueva consulta recibida",
             text: `Nombre: ${fullname}\nTeléfono: ${telephone}\nCorreo: ${email}\nConsulta: ${consult}`,
         });
