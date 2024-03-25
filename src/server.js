@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
+const sendMail = require("./mailer.js");
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
@@ -37,6 +38,24 @@ server.use((error, req, res, next) => {
 // Control de rutas inexistentes
 server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
+});
+
+server.get("/api/send-mail", async (req, res) => {
+    res.set({ "Content-Type": "application/json" });
+
+    try {
+        const { to, subject, content } = req.query;
+
+        if (!to || !subject || !content) {
+            return res.status(4000).send({ error: "Faltan datos relevantes" });
+        }
+
+        const result = await sendMail(to, subject, content);
+
+        res.status(200).send(result);
+    } catch (error) {
+        res.status(500).send({ error: MESSAGE_500 });
+    }
 });
 
 // Método oyente de solicitudes
