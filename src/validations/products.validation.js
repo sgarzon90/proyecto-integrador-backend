@@ -1,16 +1,12 @@
 const Joi = require("joi");
-
 const validate = (schema, params, res, next) => {
     const { error } = schema.validate(params);
-
     if (error) {
         console.log({ error: error.details[0].message });
         return res.status(400).json({ error: error.details[0].message });
     }
-
     next();
 };
-
 const validateParamId = (req, res, next) => {
     const schema = Joi.object({
         id: Joi.number().integer().positive().required().messages({
@@ -20,10 +16,8 @@ const validateParamId = (req, res, next) => {
             "any.required": "El ID es requerido",
         }),
     });
-
     validate(schema, req.params, res, next);
 };
-
 const validateBody = (req, res, next) => {
     delete req.body._id;
     const schema = Joi.object({
@@ -37,12 +31,9 @@ const validateBody = (req, res, next) => {
         isImported: Joi.boolean(),
         isNational: Joi.boolean(),
         freeShipping: Joi.boolean(),
-        imageFileName: Joi.any().required(),
     });
-
     validate(schema, req.body, res, next);
 };
-
 module.exports = {
     validateParamId,
     validateBody,
