@@ -1,10 +1,9 @@
 const { getCollection } = require("../connectionDB.js");
 
-// Función para calcular el total de la compra
 const calculateTotal = (items) => {
     let total = 0;
     items.forEach((item) => {
-        total += item.price * item.amount; // Multiplica el precio por la cantidad de cada producto
+        total += item.price * item.amount;
     });
     return total;
 };
@@ -13,13 +12,10 @@ const processShoppingCart = async (req, res) => {
     try {
         const { items, customerInfo } = req.body;
 
-        // Obtener la colección de transacciones
         const transactionsCollection = await getCollection("transactions");
 
-        // Calcular el total de la compra
         const total = calculateTotal(items);
 
-        // Actualizar el stock de los productos
         for (const item of items) {
             const productCollection = await getCollection("products");
             const product = await productCollection.findOne({ id: item.id });
@@ -33,7 +29,6 @@ const processShoppingCart = async (req, res) => {
             await productCollection.updateOne({ id: item.id }, { $set: { stock: updatedStock } });
         }
 
-        // Crear el documento de la transacción
         const transaction = {
             fecha: new Date(),
             total,
@@ -47,10 +42,8 @@ const processShoppingCart = async (req, res) => {
             })),
         };
 
-        // Insertar la transacción en la colección
         await transactionsCollection.insertOne(transaction);
 
-        // Enviar respuesta al cliente
         res.status(200).send({ success: true, message: "Transacción procesada correctamente" });
     } catch (error) {
         console.error(error);
