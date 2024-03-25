@@ -37,8 +37,8 @@ const processShoppingCart = async (req, res) => {
         const transaction = {
             fecha: new Date(),
             total,
-            nombre: customerInfo.firstName,
-            apellido: customerInfo.lastName,
+            nombre: customerInfo.nombre,
+            apellido: customerInfo.apellido,
             productos: items.map((item) => ({
                 id: item.id,
                 nombre: item.name,
