@@ -40,7 +40,7 @@ server.use("*", (req, res) => {
     res.status(404).send("<h1>Error 404</h1><h3>La URL indicada no existe en este servidor</h3>");
 });
 
-app.post("/api/contact", async (req, res) => {
+server.post("/api/contact", async (req, res) => {
     try {
         const { fullname, telephone, email, consult } = req.body;
         // Realizar la validación si es necesario
