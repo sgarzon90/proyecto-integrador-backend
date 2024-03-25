@@ -1,4 +1,4 @@
-const { getCollection, generateId } = require("../../../MI-CURSO-FULLSTACK/clase_61/banckend/src/connectionDB.js");
+const { getCollection, generateId } = require("../connectionDB.js");
 
 const processShoppingCart = async (req, res) => {
     try {
@@ -7,15 +7,11 @@ const processShoppingCart = async (req, res) => {
         // Obtener la colección de transacciones
         const transactionsCollection = await getCollection("transactions");
 
-        // Generar un nuevo ID para la transacción
-        const id = await generateId(transactionsCollection);
-
         // Calcular el total de la compra
         const total = calculateTotal(items);
 
         // Crear el documento de la transacción
         const transaction = {
-            id,
             fecha: new Date(),
             total,
             nombre: customerInfo.nombre,
@@ -38,3 +34,5 @@ const processShoppingCart = async (req, res) => {
         res.status(500).send({ success: false, message: "Error al procesar la transacción" });
     }
 };
+
+module.exports = { processShoppingCart };
