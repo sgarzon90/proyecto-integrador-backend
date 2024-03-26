@@ -38,7 +38,7 @@ const createSchema = (values) => {
         id: Number(id),
         name: normalizeValue(name),
         description: description ?? null,
-        imageFileName,
+        imageFileName: Array.isArray(imageFileName) ? imageFileName[0].filename : "", // Tomar solo el nombre del archivo de la primera imagen en caso de ser un array
         stock: Number(stock),
         price: Number(price),
         isPromotion: Boolean(isPromotion),
@@ -49,13 +49,11 @@ const createSchema = (values) => {
         freeShipping: Boolean(freeShipping),
     };
 };
-const deleteImage = (imageFileName) => {
-    if (imageFileName && imageFileName.length > 0) {
-        const filePath = path.join(DIR_IMAGES_PATH, imageFileName);
 
-        if (imageFileName != "default.jpg") {
-            deletefile(filePath);
-        }
+const deleteImage = (imageFileName) => {
+    if (imageFileName && imageFileName !== "default.jpg") {
+        const filePath = path.join(DIR_IMAGES_PATH, imageFileName);
+        deletefile(filePath);
     }
 };
 
@@ -132,6 +130,7 @@ const update = async (req, res) => {
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 };
+
 const remove = async (req, res) => {
     res.set(HEADER_CONTENT_TYPE);
     try {
