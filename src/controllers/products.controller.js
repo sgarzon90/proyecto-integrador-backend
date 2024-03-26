@@ -109,7 +109,7 @@ const update = async (req, res) => {
         const product = await collection.findOne({ id: Number(id) });
         if (!product) return res.status(404).send({ success: false, message: ERROR_ID_NOT_FOUND });
         // Eliminar el campo "id" de req.body antes de actualizar
-        // const { id: productId, ...values } = req.body;
+        const { id: productId, ...values } = req.body;
         const updatedValues = createSchema({ id: Number(id), ...values });
         await collection.updateOne({ id: Number(id) }, { $set: updatedValues });
         res.status(200).send({ success: true, data: updatedValues });
