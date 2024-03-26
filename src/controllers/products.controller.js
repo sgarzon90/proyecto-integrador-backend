@@ -53,13 +53,18 @@ const deleteImage = (imageFileName) => {
         }
     }
 };
+
 const getAll = async (req, res) => {
     res.set(HEADER_CONTENT_TYPE);
     try {
         const { search } = req.query;
         const filters = {};
         if (search) {
-            filters["$or"] = [{ id: Number(search) }, { name: { $regex: normalizeValue(search), $options: "i" } }];
+            if (!isNaN(search)) {
+                filters["id"] = Number(search);
+            } else {
+                filters["name"] = { $regex: normalizeValue(search), $options: "i" };
+            }
         }
         const collection = await getCollection("products");
         const products = await collection.find(filters).sort({ name: 1 }).hint("idx_id").hint("idx_name").toArray();
@@ -69,6 +74,7 @@ const getAll = async (req, res) => {
         res.status(500).send({ success: false, message: ERROR_SERVER });
     }
 };
+
 const getOne = async (req, res) => {
     res.set(HEADER_CONTENT_TYPE);
     try {
