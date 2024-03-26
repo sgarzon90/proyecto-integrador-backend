@@ -30,7 +30,7 @@ const validateBody = (req, res, next) => {
         isImported: Joi.boolean(),
         isNational: Joi.boolean(),
         freeShipping: Joi.boolean(),
-        imageFileName: Joi.string().min(15).max(150).required(),
+        imageFileName: Joi.array().items(Joi.string().min(15).max(300).required()).required(),
     });
     validate(schema, req.body, res, next);
 };
