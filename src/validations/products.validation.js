@@ -19,7 +19,6 @@ const validateParamId = (req, res, next) => {
     validate(schema, req.params, res, next);
 };
 const validateBody = (req, res, next) => {
-    delete req.body._id;
     const schema = Joi.object({
         name: Joi.string().min(3).max(25).required(),
         description: Joi.string().min(15).max(150).allow("").allow(null).required(),
@@ -31,6 +30,7 @@ const validateBody = (req, res, next) => {
         isImported: Joi.boolean(),
         isNational: Joi.boolean(),
         freeShipping: Joi.boolean(),
+        imageFileName: Joi.string().min(15).max(150).required(),
     });
     validate(schema, req.body, res, next);
 };
