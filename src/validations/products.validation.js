@@ -23,7 +23,6 @@ const validateBody = (req, res, next) => {
     const schema = Joi.object({
         name: Joi.string().min(3).max(25).required(),
         description: Joi.string().min(15).max(150).allow("").allow(null).required(),
-        imageFileName: Joi.array().min(1).required(),
         stock: Joi.number().integer().min(0).required(),
         price: Joi.number().min(0).required(),
         isPromotion: Joi.boolean(),
