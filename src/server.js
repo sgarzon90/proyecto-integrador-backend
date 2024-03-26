@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
+const { sendEmail } = require("./controllers/contact.controller.js");
 
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
@@ -32,6 +33,19 @@ server.use((error, req, res, next) => {
     }
 
     res.status(500).send({ success: false, message: ERROR_SERVER });
+});
+
+// Ruta para manejar las solicitudes de contacto
+server.post("/api/contact", async (req, res) => {
+    try {
+        const { fullname, email, telephone, consult } = req.body;
+        // Enviar correo electrónico con los detalles de la consulta
+        await sendEmail(fullname, email, telephone, consult); // Utiliza la función sendEmail del controlador de contacto
+        res.status(200).send({ success: true, message: "Consulta enviada con éxito" });
+    } catch (error) {
+        console.error("Error al enviar el correo electrónico:", error);
+        res.status(500).send({ success: false, message: ERROR_SERVER });
+    }
 });
 
 // Control de rutas inexistentes
