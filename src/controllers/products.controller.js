@@ -22,7 +22,8 @@ const normalizeValue = (value) => {
 };
 
 const createSchema = (values) => {
-    const { id,
+    const {
+        id,
         name,
         description,
         imageFileName,
@@ -34,7 +35,6 @@ const createSchema = (values) => {
         isImported,
         isNational,
         freeShipping } = values;
-
     return {
         id: Number(id),
         name: normalizeValue(name),

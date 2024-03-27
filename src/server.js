@@ -17,10 +17,14 @@ const server = express();
 const PORT = process.env.PORT || 3030;
 const HOST = process.env.HOST || "localhost";
 
+// configuración de CORS
+server.use(cors({
+    origin: process.env.FRONTEND_URL,
+    methods: "GET,POST,PUT,PATCH,DELETE",
+}));
+
 // Middlewares
 server.use(express.json());
-server.use(cors());
-server.options("", cors());
 server.use("/api/products", productsRouter);
 
 // Configuración de carpeta estática
