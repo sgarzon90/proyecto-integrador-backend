@@ -1,9 +1,11 @@
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
+
 const { sendEmail } = require("./controllers/contact.controller.js");
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
+
 const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
 
@@ -17,13 +19,13 @@ const HOST = process.env.HOST || "localhost";
 
 // Middlewares
 server.use(express.json());
+
 server.use(cors());
 server.options("", cors());
 server.use("/api/products", productsRouter);
 
 // Configuración de carpeta estática
-// server.use("/public", express.static(DIR_PUBLIC_PATH));
-server.use(express.static(DIR_PUBLIC_PATH));
+server.use("/public", express.static(DIR_IMAGES_PATH));
 
 // Control de errores
 server.use((error, req, res, next) => {
