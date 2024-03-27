@@ -6,7 +6,7 @@ const { sendEmail } = require("./controllers/contact.controller.js");
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
 
-const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
+const { ENV_PATH, DIR_PUBLIC_PATH, DIR_IMAGES_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
 
 // variables de entorno
