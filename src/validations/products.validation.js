@@ -24,8 +24,8 @@ const validateParamId = (req, res, next) => {
 
 const validateBody = (req, res, next) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).max(35).required(),
-        description: Joi.string().min(15).max(150).allow("").allow(null).required(),
+        name: Joi.string().min(3).max(50).required(),
+        description: Joi.string().min(10).max(300).allow("").allow(null).required(),
         stock: Joi.number().integer().min(0).required(),
         price: Joi.number().min(1).required(),
         brand: Joi.string().allow("").allow(null),
@@ -34,7 +34,7 @@ const validateBody = (req, res, next) => {
         isNational: Joi.boolean(),
         freeShipping: Joi.boolean(),
         isPromotion: Joi.boolean(),
-        imageFileName: Joi.string().min(15).max(150).required(),
+        imageFileName: Joi.string().min(3).max(300).required(),
     });
     validate(schema, req.body, res, next);
 };
