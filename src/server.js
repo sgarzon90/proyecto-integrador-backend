@@ -25,7 +25,7 @@ server.options("", cors());
 server.use("/api/products", productsRouter);
 
 // Configuración de carpeta estática
-server.use(express.static(DIR_PUBLIC_PATH));
+server.use("/images", express.static(DIR_IMAGES_PATH));
 
 // Control de errores
 server.use((error, req, res, next) => {
