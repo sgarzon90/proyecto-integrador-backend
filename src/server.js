@@ -6,7 +6,7 @@ const { sendEmail } = require("./controllers/contact.controller.js");
 const productsRouter = require("./routes/products.router.js");
 const database = require("./connectionDB.js");
 
-const { ENV_PATH, DIR_PUBLIC_PATH } = require("./constants/paths.js");
+const { ENV_PATH, DIR_PUBLIC_PATH, DIR_IMAGES_PATH } = require("./constants/paths.js");
 const { ERROR_SERVER } = require("./constants/messages.js");
 
 // variables de entorno
@@ -24,8 +24,11 @@ server.use(cors());
 server.options("", cors());
 server.use("/api/products", productsRouter);
 
-// Configuración de carpeta estática
+// Configurar la ruta para servir imágenes estáticas
 server.use("/images", express.static(DIR_IMAGES_PATH));
+
+// Agregar configuración para servir otros archivos estáticos (si es necesario)
+server.use(express.static(DIR_PUBLIC_PATH));
 
 // Control de errores
 server.use((error, req, res, next) => {
