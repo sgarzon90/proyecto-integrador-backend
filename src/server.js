@@ -24,8 +24,8 @@ server.use(cors());
 server.options("", cors());
 server.use("/api/products", productsRouter);
 
-// Configurar la ruta para servir imágenes estáticas
-server.use("/images", express.static(DIR_IMAGES_PATH));
+// Configurar la ruta para servir imágenes estáticas desde la carpeta public/images
+server.use("/images", express.static(`${DIR_PUBLIC_PATH}/images`));
 
 // Agregar configuración para servir otros archivos estáticos (si es necesario)
 server.use(express.static(DIR_PUBLIC_PATH));

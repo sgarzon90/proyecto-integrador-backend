@@ -1,6 +1,6 @@
 const multer = require("multer");
 
-const { DIR_IMAGES_PATH } = require("./constants/paths.js");
+const { DIR_PUBLIC_PATH } = require("./constants/paths.js");
 const { ERROR_UPLOAD_IMAGE } = require("./constants/messages.js");
 
 const { getRandomNumber } = require("./helpers/math.helper.js");
@@ -8,7 +8,7 @@ const { getDatetimeAsInteger } = require("./helpers/datetime.helper.js");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, DIR_IMAGES_PATH);
+        cb(null, `${DIR_PUBLIC_PATH}/images`);
     },
     filename: function (req, file, cb) {
         const datetime = getDatetimeAsInteger();
